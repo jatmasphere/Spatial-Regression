@@ -518,6 +518,9 @@ th, td {padding: 5px;}
 ## Multiple R-squared:  0.938,  Adjusted R-squared:  0.8217 
 ## F-statistic: 8.067 on 15 and 8 DF,  p-value: 0.002821</code></pre>
 <p>None of the independent variables show up as significant based on the OLS analysis. The model itself, however, has a p-value of 0.003. What this might suggest is that our dataset for child poverty in Maryland is probably not dependent on any of these factors spatially within the state, but perhaps the nature of Maryland’s closeness to several other nearby states and large cities (with large wealth inequalities, like Baltimore), could be having an influence of the model’s fit.</p>
+</div>
+<div id="morans-correlation-test" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Moran’s Correlation Test</h1>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#determining underlying spatial relationships in our residuals:</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>fips <span class="ot">&lt;-</span> county.fips</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>fips.codes <span class="ot">&lt;-</span> <span class="fu">separate</span>(<span class="at">data =</span> fips, <span class="at">col =</span> polyname, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">&quot;state&quot;</span>, <span class="st">&quot;county&quot;</span>), <span class="at">sep =</span> <span class="st">&quot;,&quot;</span>)</span>
@@ -530,9 +533,6 @@ th, td {padding: 5px;}
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>neighb.data <span class="ot">&lt;-</span> <span class="fu">poly2nb</span>(cleaned, <span class="at">queen=</span>T)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>cont.neighb <span class="ot">&lt;-</span> <span class="fu">nb2listw</span>(neighb.data,<span class="at">style=</span><span class="st">&quot;W&quot;</span>, <span class="at">zero.policy =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">#Now that we have created a spatial dataset and a list of neighbors, we can determine if there is any residual spatial dependence.</span></span></code></pre></div>
-</div>
-<div id="morans-correlation-test" class="section level1" number="4">
-<h1><span class="header-section-number">4</span> Moran’s Correlation Test</h1>
 <p>In this step we will use a Moran’s Correlation Test designed for regression residuals to examines the residuals of the OLS regression using the spatial relationship matrix. In this case the null hypothesis (HO) is “no spatial correlation in the residuals”.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm.morantest</span>(ols, cont.neighb)</span></code></pre></div>
 <pre><code>## 
